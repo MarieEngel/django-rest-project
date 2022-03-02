@@ -7,4 +7,15 @@ async def index(request):
     async with httpx.AsyncClient() as client:
         response = await client.get("http://localhost:8000/users/users/", auth=('admin', 'password'))
     users = response.json()
+    print(users)
     return render(request, 'users/index.html', {'users': users})
+
+async def detail(request,id):
+    print("ID is ", id)
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"http://localhost:8000/users/users/{id}/", auth=('admin', 'password'))
+    user = response.json()
+    print(user)
+    return render(request, 'users/detail.html', {'user': user})
+
+
