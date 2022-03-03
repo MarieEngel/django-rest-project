@@ -20,6 +20,4 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class PostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Post
-        fields = [
-            'title', 'body'
-        ]
+        fields = ["title", "body"]
