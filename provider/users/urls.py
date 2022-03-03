@@ -20,7 +20,8 @@ urlpatterns = [
     path("", include(router.urls)),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("posts/", views.PostList.as_view()),
-    path("posts/<int:pk>/", views.PostDetail.as_view()),
+    path("posts/<int:id>/", views.PostDetail.as_view()),
+
 ]
 
 # urlpatterns = format_suffix_patterns(urlpatterns)
