@@ -1,0 +1,10 @@
+{% block content %}
+<h1>Edit</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ post.as_p }}
+        <button type="submit" class="btn btn-sm btn-dark">Submit</button>
+        <a href="{%url "index"%}">Cancel</a>
+    </form>
+{% endblock content %}
