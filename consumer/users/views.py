@@ -1,7 +1,7 @@
 import httpx
 
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from .forms import PostForm
 
 
 async def index(request):
@@ -27,3 +27,36 @@ async def detail(request, id):
     user = response.json()
     print(user)
     return render(request, "users/detail.html", {"user": user})
+
+async def delete_post(request, id):
+    if request.method == "POST":
+        async with httpx.AsyncClient() as client:
+            post_response = await client.delete(
+            f"http://localhost:8000/users/posts/{id}/", auth=("admin", "password")
+            )
+        return redirect("/users")
+
+    return render(request, "users/delete_post.html")
+
+async def edit_post(request, id):
+    if request.method == "POST":
+        async with httpx.AsyncClient() as client:
+            post_response = await client.put(
+                f"http://localhost:8000/users/posts/{id}/",
+                auth=("admin", "password"),
+                data=request.POST
+            )
+        return redirect("/users/posts")
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"http://localhost:8000/users/posts/{id}/", auth=("admin", "password"))
+    post = response.json()
+    print(post)
+
+    return render(request, "users/edit_post.html", { "post": PostForm(initial={
+        "id": post["id"],
+        "title": post["title"],
+        "body": post["body"],
+    }) })
+
+
