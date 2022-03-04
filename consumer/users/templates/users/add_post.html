@@ -1,0 +1,11 @@
+{% block content %}
+<h1>Add a Post</h1>
+<div class="col-sm-7">
+    <form method="post">
+        {{ post.as_p }}
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-dark" >Submit</button>
+    </form>
+</div>    
+   
+{% endblock content %}
