@@ -46,7 +46,7 @@ async def edit_post(request, id):
                 auth=("admin", "password"),
                 data=request.POST
             )
-        return redirect("/users/posts")
+        return redirect("/users")
 
     async with httpx.AsyncClient() as client:
         response = await client.get(f"http://localhost:8000/users/posts/{id}/", auth=("admin", "password"))
@@ -59,4 +59,15 @@ async def edit_post(request, id):
         "body": post["body"],
     }) })
 
+async def add_post(request):
+    if request.method == "POST":
+        async with httpx.AsyncClient() as client:
+            post_response = await client.post(
+                f"http://localhost:8000/users/",
+                auth=("admin", "password"),
+                data=request.POST
+            )
+        return redirect("/users")
+
+    return render(request, "users/add_post.html", { "post": PostForm() })
 
