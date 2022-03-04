@@ -63,11 +63,11 @@ async def add_post(request):
     if request.method == "POST":
         async with httpx.AsyncClient() as client:
             post_response = await client.post(
-                f"http://localhost:8000/users/",
+                f"http://localhost:8000/users/posts/",
                 auth=("admin", "password"),
                 data=request.POST
             )
         return redirect("/users")
 
-    return render(request, "users/add_post.html", { "post": PostForm() })
+    return render(request, "users/add_post.html", { "post": PostForm()})
 
