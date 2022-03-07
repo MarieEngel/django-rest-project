@@ -4,11 +4,14 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <h1>{{user.username}}</h1>
-
+    {% if connection_error %}
+      <p><b>Could not access remote server.</b></p>
+    {% endif %}
+    {% if user %}
+        <h1>{{user.username}}</h1>
         <b>Username: </b> {{user.username}}<br>
         <b>Email: </b> {{user.email}}<br>
         <b>URL: </b> {{user.url}}
-      </p>
+    {% endif %}
   </body>
 </html>

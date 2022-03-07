@@ -31,14 +31,21 @@ async def index(request):
 
 
 async def detail(request, id):
+    context = {
+        "user": None,
+        "connection_error": False
+    }
     print("ID is ", id)
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            f"http://localhost:8000/users/users/{id}/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
-        )
-    user = response.json()
-    print(user)
-    return render(request, "users/detail.html", {"user": user})
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"http://localhost:8000/users/users/{id}/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
+            )
+        user = response.json()
+        print(user)
+    except httpx.RequestError as exc:
+        context["connection_error"] = True
+    return render(request, "users/detail.html", context)
 
 async def delete_post(request, id):
     if request.method == "POST":
