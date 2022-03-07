@@ -6,19 +6,28 @@ from django.conf import settings
 
 
 async def index(request):
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            "http://localhost:8000/users/users/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
-        )
-        posts_response = await client.get(
-            "http://localhost:8000/users/posts/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
-        )
-    users = response.json()
-    posts = posts_response.json()
-    print(users)
-    print(posts)
-    
-    return render(request, "users/index.html", {"users": users, "posts": posts})
+    context = {
+        "users": [],
+        "posts": [],
+        "connection_error": False
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "http://localhost:8000/users/users/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
+            )
+            posts_response = await client.get(
+                "http://localhost:8000/users/posts/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
+            )
+        users = response.json()
+        posts = posts_response.json()
+        print(users)
+        print(posts)
+        context["users"] = users["results"]
+        context["posts"] = posts["results"]
+    except httpx.RequestError as exc:
+        context["connection_error"] = True
+    return render(request, "users/index.html", context)
 
 
 async def detail(request, id):

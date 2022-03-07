@@ -5,21 +5,25 @@
   </head>
   <body>
     <h1>The Users</h1>
-    {% for user in users.results %}
+    {% for user in users %}
       <p>
         <b>{{user.username}} </b> <a href="{% url 'detail' user.id %}">Details </a><br>
       </p>
     {% endfor %}
       <hr>
     <h1>The Posts</h1>
-    {% for post in posts.results %}
+    {% for post in posts %}
       <p>
         <b>{{post.title}} </b>
         <a href="{% url 'edit_post' post.id %}"> (Edit)</a><br>
         <a href="{% url 'delete_post' post.id %}"> (Delete)</a><br>
         {{post.body}}<br>
       </p>
-    {% endfor %}
+    {% empty %}
+      {% if connection_error %}
+        <p><b>Could not access remote server.</b></p>
+      {% endif %}
+  {% endfor %}
     <a href="{% url "add_post" %}">Add a new post</a><br>
   </body>
 </html>
