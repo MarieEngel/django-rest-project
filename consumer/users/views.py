@@ -16,6 +16,8 @@ async def index(request):
     users = response.json()
     posts = posts_response.json()
     print(users)
+    print(posts)
+    
     return render(request, "users/index.html", {"users": users, "posts": posts})
 
 

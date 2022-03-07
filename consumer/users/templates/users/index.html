@@ -12,7 +12,7 @@
     {% endfor %}
       <hr>
     <h1>The Posts</h1>
-    {% for post in posts %}
+    {% for post in posts.results %}
       <p>
         <b>{{post.title}} </b>
         <a href="{% url 'edit_post' post.id %}"> (Edit)</a><br>
