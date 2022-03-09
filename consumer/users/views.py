@@ -49,44 +49,55 @@ async def detail(request, id):
 
 async def delete_post(request, id):
     if request.method == "POST":
-        async with httpx.AsyncClient() as client:
-            post_response = await client.delete(
-            f"http://localhost:8000/users/posts/{id}/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
-            )
-        return redirect("/users")
+        try:
+            async with httpx.AsyncClient() as client:
+                post_response = await client.delete(
+                f"http://localhost:8000/users/posts/{id}/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
+                )
+            return redirect("/users")
+        except httpx.RequestError as exc:
+            return render(request, "users/provider_failed.html")
 
     return render(request, "users/delete_post.html")
 
 async def edit_post(request, id):
     if request.method == "POST":
-        async with httpx.AsyncClient() as client:
-            post_response = await client.put(
-                f"http://localhost:8000/users/posts/{id}/",
-                headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
-                data=request.POST
-            )
-        return redirect("/users")
-
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"http://localhost:8000/users/posts/{id}/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},)
-    post = response.json()
-    print(post)
-
-    return render(request, "users/edit_post.html", { "post": PostForm(initial={
-        "id": post["id"],
-        "title": post["title"],
-        "body": post["body"],
-    }) })
+        try:
+            async with httpx.AsyncClient() as client:
+                post_response = await client.put(
+                    f"http://localhost:8000/users/posts/{id}/",
+                    headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
+                    data=request.POST
+                )
+            return redirect("/users")
+        except httpx.RequestError as exc:
+            return render(request, "users/provider_failed.html")
+    else:
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(f"http://localhost:8000/users/posts/{id}/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},)
+            post = response.json()
+            print(post)
+        
+            return render(request, "users/edit_post.html", { "post": PostForm(initial={
+                "id": post["id"],
+                "title": post["title"],
+                "body": post["body"],
+            }) })
+        except httpx.RequestError as exc:
+            return render(request, "users/provider_failed.html")
 
 async def add_post(request):
     if request.method == "POST":
-        async with httpx.AsyncClient() as client:
-            post_response = await client.post(
-                f"http://localhost:8000/users/posts/",
-                headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
-                data=request.POST
-            )
-        return redirect("/users")
-
+        try:
+            async with httpx.AsyncClient() as client:
+                post_response = await client.post(
+                    f"http://localhost:8000/users/posts/",
+                    headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
+                    data=request.POST
+                )
+            return redirect("/users")
+        except httpx.RequestError as exc:
+            return render(request, "users/provider_failed.html")
     return render(request, "users/add_post.html", { "post": PostForm()})
 
