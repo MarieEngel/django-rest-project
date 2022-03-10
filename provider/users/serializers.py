@@ -2,7 +2,7 @@
 
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Post
+from .models import Post, Image
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,3 +21,8 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Post
         fields = ["title", "body", "id"]
+
+class ImageSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Image
+        fields = ["caption", "image"]        

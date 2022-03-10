@@ -19,11 +19,20 @@
         <a href="{% url 'delete_post' post.id %}"> (Delete)</a><br>
         {{post.body}}<br>
       </p>
-    {% empty %}
+    {% endfor %}
+    
+    <a href="{% url "add_post" %}">Add a new post</a><br>
+
+    <h1>Gallery</h1>
+    {% for upload in uploads %}
+    <p>
+        <p><img src="http://localhost:8000/users{{ upload.image }}" class="img-thumbnail" alt="New Image" /></p>
+      <b>{{upload.caption}} </b>
+    </p>
+  {% empty %}
       {% if connection_error %}
         <p><b>Could not access remote server.</b></p>
       {% endif %}
   {% endfor %}
-    <a href="{% url "add_post" %}">Add a new post</a><br>
   </body>
 </html>

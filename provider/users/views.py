@@ -1,12 +1,13 @@
 from django.http import Http404
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.views import APIView
-from .serializers import UserSerializer, GroupSerializer, PostSerializer
-from .models import Post
+from .serializers import UserSerializer, GroupSerializer, PostSerializer, ImageSerializer
+from .models import Post, Image
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -87,3 +88,20 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class ImageView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def get(self, request):
+        image_objects = Image.objects.all()
+        serializer = ImageSerializer(image_objects, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        file_serializer = ImageSerializer(data=request.data)
+        if file_serializer.is_valid():
+            file_serializer.save()
+            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

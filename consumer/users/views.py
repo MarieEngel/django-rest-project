@@ -9,6 +9,7 @@ async def index(request):
     context = {
         "users": [],
         "posts": [],
+        "uploads":[],
         "connection_error": False
     }
     try:
@@ -19,12 +20,16 @@ async def index(request):
             posts_response = await client.get(
                 "http://localhost:8000/users/posts/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
             )
+            uploads_response = await client.get(
+                "http://localhost:8000/users/uploads/", headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
+            )
         users = response.json()
         posts = posts_response.json()
-        print(users)
-        print(posts)
+        uploads = uploads_response.json()
+        print(uploads)
         context["users"] = users["results"]
         context["posts"] = posts["results"]
+        context["uploads"] = uploads
     except httpx.RequestError as exc:
         context["connection_error"] = True
     return render(request, "users/index.html", context)
