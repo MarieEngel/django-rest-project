@@ -49,8 +49,7 @@ async def detail(request, id):
                 f"http://localhost:8000/users/users/{id}/",
                 headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
             )
-        user = response.json()
-        print(user)
+        context["user"] = response.json()
     except httpx.RequestError as exc:
         context["connection_error"] = True
     return render(request, "users/detail.html", context)
