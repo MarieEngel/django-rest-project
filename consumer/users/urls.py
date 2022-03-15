@@ -10,5 +10,4 @@ urlpatterns = [
     path("<id>/", detail, name="detail"),
     path("<id>/delete/", delete_post, name="delete_post"),
     path("<id>/edit/", edit_post, name="edit_post"),
-   
     ]
