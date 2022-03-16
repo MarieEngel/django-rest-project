@@ -43,15 +43,24 @@ async def index(request):
 async def detail(request, id):
     context = {"user": None, "connection_error": False}
     print("ID is ", id)
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"http://localhost:8000/users/users/{id}/",
-                headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
-            )
-        context["user"] = response.json()
-    except httpx.RequestError as exc:
-        context["connection_error"] = True
+    context["user"] = await cache.aget("user" + id)
+    
+    if not context["user"]: 
+        print("user" + id, " not in cache \n")
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"http://localhost:8000/users/users/{id}/",
+                    headers={"Authorization": f"Token {settings.AUTH_TOKEN}"},
+                )
+            context["user"] = response.json()
+            await cache.aset("user" + id, context["user"], 150)
+        except httpx.RequestError as exc:
+            context["connection_error"] = True
+    else:
+        print("user" + id, " read from cache \n")
+    print(context)
+    print(context["user"])
     return render(request, "users/detail.html", context)
 
 
